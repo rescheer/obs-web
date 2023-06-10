@@ -387,6 +387,7 @@
                 class="button is-danger"
                 on:click={stopVirtualCam}
                 title="Stop Virtual Webcam"
+                disabled
               >
                 <span class="icon"><Icon path={mdiCameraOff} /></span>
               </button>
@@ -395,6 +396,7 @@
                 class="button is-danger is-light"
                 on:click={startVirtualCam}
                 title="Start Virtual Webcam"
+                disabled
               >
                 <span class="icon"><Icon path={mdiCamera} /></span>
               </button>
@@ -404,6 +406,7 @@
               class="button is-link"
               on:click={toggleStudioMode}
               title="Toggle Studio Mode"
+              disabled
             >
               <span class="icon"><Icon path={mdiBorderVertical} /></span>
             </button>
@@ -415,11 +418,12 @@
             >
               <span class="icon"><Icon path={mdiArrowSplitHorizontal} /></span>
             </button>
-            <!-- <button
+            <button
               class:is-light={!editable}
               class="button is-link"
               title="Edit Scenes"
               on:click={() => (editable = !editable)}
+              disabled
             >
               <span class="icon">
                 <Icon path={editable ? mdiImageEditOutline : mdiImageEdit} />
@@ -430,6 +434,7 @@
               class="button is-link"
               title="Show Scenes as Icons"
               on:click={() => (isIconMode = !isIconMode)}
+              disabled
             >
               <span class="icon">
                 <Icon
@@ -445,6 +450,7 @@
               class="button is-link"
               title="Toggle Replay Buffer"
               on:click={toggleReplay}
+              disabled
             >
               <span class="icon">
                 <Icon
@@ -459,16 +465,18 @@
               title="Disconnect"
             >
               <span class="icon"><Icon path={mdiConnection} /></span>
-            </button> -->
+            </button>
+            <!--
             <ProfileSelect />
             <SceneCollectionSelect />
+            -->
           {:else}
             <button class="button is-danger" disabled
               >{errorMessage || 'Disconnected'}</button
             >
           {/if}
           <!-- svelte-ignore a11y-missing-attribute -->
-          <!-- <button
+          <button
             class:is-light={!isFullScreen}
             class="button is-link"
             on:click={toggleFullScreen}
@@ -477,7 +485,7 @@
             <span class="icon">
               <Icon path={isFullScreen ? mdiFullscreenExit : mdiFullscreen} />
             </span>
-          </button> -->
+          </button>
         </div>
       </div>
     </div>
