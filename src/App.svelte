@@ -494,7 +494,7 @@
 
 <div class="status">
   {#if connected}
-    <button class="button is-info is-light" style="width: 100%; margin-bottom: 1rem;" disabled>
+    <button class="button is-info is-light" style="width: 100%;" disabled>
       {#if heartbeat && heartbeat.stats}
         {Math.round(heartbeat.stats.activeFps)} fps, {Math.round(
           heartbeat.stats.cpuUsage
