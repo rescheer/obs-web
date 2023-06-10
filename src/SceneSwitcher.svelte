@@ -13,7 +13,11 @@
   let isStudioMode = false
   const sceneIcons = JSON.parse(window.localStorage.getItem('sceneIcons') || '{}')
 
-  $: scenesFiltered = scenes.filter((scene) => scene.sceneName.indexOf('(hidden)') === -1).reverse()
+  $: scenesFiltered = scenes.filter((scene) => 
+    scene.sceneName.indexOf('SRC') === -1 &&
+    scene.sceneName.indexOf('DISC') === -1 &&
+    scene.sceneName.indexOf('---') === -1)
+    .reverse()
   // store sceneIcons on change
   $: window.localStorage.setItem('sceneIcons', JSON.stringify(sceneIcons))
 
