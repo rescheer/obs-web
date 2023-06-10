@@ -32,6 +32,7 @@
     border: none;
     height: 4rem;
     text-align: center;
+    font-size: 1.25rem;
     width: 100%;
     cursor: pointer;
     background: #3e8ed0 no-repeat center center / cover;
