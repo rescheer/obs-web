@@ -98,7 +98,7 @@
   let heartbeatInterval
   let isFullScreen
   let isStudioMode
-  let isSceneOnTop
+  let isSceneOnTop = true
   let isVirtualCamActive
   let isIconMode = window.localStorage.getItem('isIconMode') || false
   let isReplaying
@@ -329,13 +329,6 @@
         <div class="buttons">
           <!-- svelte-ignore a11y-missing-attribute -->
           {#if connected}
-            <button class="button is-info is-light" disabled>
-              {#if heartbeat && heartbeat.stats}
-                {Math.round(heartbeat.stats.activeFps)} fps, {Math.round(
-                  heartbeat.stats.cpuUsage
-                )}% CPU, {heartbeat.stats.renderSkippedFrames} skipped frames
-              {:else}Connected{/if}
-            </button>
             {#if heartbeat && heartbeat.streaming && heartbeat.streaming.outputActive}
               <button
                 class="button is-danger"
@@ -422,7 +415,7 @@
             >
               <span class="icon"><Icon path={mdiArrowSplitHorizontal} /></span>
             </button>
-            <button
+            <!-- <button
               class:is-light={!editable}
               class="button is-link"
               title="Edit Scenes"
@@ -460,22 +453,22 @@
               </span>
               {#if replayError}<span>{replayError}</span>{/if}
             </button>
-            <ProfileSelect />
-            <SceneCollectionSelect />
             <button
               class="button is-danger is-light"
               on:click={disconnect}
               title="Disconnect"
             >
               <span class="icon"><Icon path={mdiConnection} /></span>
-            </button>
+            </button> -->
+            <ProfileSelect />
+            <SceneCollectionSelect />
           {:else}
             <button class="button is-danger" disabled
               >{errorMessage || 'Disconnected'}</button
             >
           {/if}
           <!-- svelte-ignore a11y-missing-attribute -->
-          <button
+          <!-- <button
             class:is-light={!isFullScreen}
             class="button is-link"
             on:click={toggleFullScreen}
@@ -484,14 +477,26 @@
             <span class="icon">
               <Icon path={isFullScreen ? mdiFullscreenExit : mdiFullscreen} />
             </span>
-          </button>
+          </button> -->
         </div>
       </div>
     </div>
   </div>
 </nav>
 
-<section class="section">
+<div class="status">
+  {#if connected}
+    <button class="button is-info is-light" style="width: 100%; margin-bottom: 1rem;" disabled>
+      {#if heartbeat && heartbeat.stats}
+        {Math.round(heartbeat.stats.activeFps)} fps, {Math.round(
+          heartbeat.stats.cpuUsage
+        )}% CPU, {heartbeat.stats.renderSkippedFrames} skipped frames
+      {:else}Connected{/if}
+    </button>
+  {/if}
+</div>
+
+<section class="section" style="padding-top: 1rem;">
   <div class="container">
     {#if connected}
       {#if isSceneOnTop}
@@ -593,15 +598,13 @@
   </div>
 </section>
 
-<footer class="footer">
+<!-- <footer class="footer">
   <div class="content has-text-centered">
     <p>
+      Based on
       <strong>OBS-web</strong>
       by
       <a href="https://niekvandermaas.nl/">Niek van der Maas</a>
-      &mdash; see
-      <a href="https://github.com/Niek/obs-web">GitHub</a>
-      for source code.
     </p>
   </div>
-</footer>
+</footer> -->
