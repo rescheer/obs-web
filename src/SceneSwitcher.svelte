@@ -9,6 +9,11 @@
   export let buttonStyle = 'text' // text, screenshot, icon
   export let editable = false
 
+  const mapCameraSceneName = 'test'
+  const mapCameraSceneItemName = 'Map Camera'
+  let mapCameraSceneItemId
+  let isMapCameraEnabled
+
   let scenesFiltered = []
   let isStudioMode = false
   const sceneIcons = JSON.parse(window.localStorage.getItem('sceneIcons') || '{}')
@@ -32,6 +37,18 @@
       isStudioMode = true
       previewScene = data.currentPreviewSceneName || ''
     }
+
+    // Get mapCamera item id from OBS
+    ({sceneItemId: mapCameraSceneItemId} = await sendCommand('GetSceneItemId',
+      { sceneName: "test", sourceName: mapCameraSceneItemName }))
+    // console.log('Battlecam ID: ', mapCameraSceneItemId)
+
+    // Get mapCamera enabled state from OBS
+    if (mapCameraSceneItemId) {
+      ({sceneItemEnabled: isMapCameraEnabled} = await sendCommand('GetSceneItemEnabled',
+        { sceneName: mapCameraSceneName, sceneItemId: mapCameraSceneItemId }))
+    }
+    // console.log('Battlecam State: ', isMapCameraEnabled)
   })
 
   obs.on('StudioModeStateChanged', async (data) => {
@@ -79,6 +96,13 @@
     previewScene = data.sceneName
   })
 
+  obs.on('SceneItemEnableStateChanged', async (data) => {
+    if (data.sceneName === "test" &&
+        data.sceneItemId === mapCameraSceneItemId) {
+      isMapCameraEnabled = data.sceneItemEnabled
+    }
+  })
+
   function sceneClicker (scene) {
     return async function () {
       if (isStudioMode) {
@@ -89,6 +113,17 @@
     }
   }
 
+  function mapCameraClicker () {
+    return async function () {
+      isMapCameraEnabled = !isMapCameraEnabled
+      await sendCommand('SetSceneItemEnabled',
+        { sceneName: mapCameraSceneName,
+          sceneItemId: mapCameraSceneItemId,
+          sceneItemEnabled: isMapCameraEnabled
+        })
+    }
+  }
+
   function onNameChange (event) {
     sendCommand('SetSceneName', { sceneName: event.target.title, newSceneName: event.target.value })
   }
@@ -96,6 +131,25 @@
     sceneIcons[event.target.title] = event.target.value
   }
 </script>
+
+<ol
+  class:column={editable}
+  class:with-icon={buttonStyle === 'icon'}
+  >
+ <li>
+    <button name="battlecamButton"
+      on:click={mapCameraClicker()}
+      style="width: 100%;
+        height: 4rem;
+        background-color: {isMapCameraEnabled ? 'lightgreen' : 'pink'};
+        font-size: 1.25rem;
+        font-weight: 600;
+      "
+    >
+    Map Camera: {isMapCameraEnabled ? "Showing" : "Hidden"}
+    </button>
+  </li>
+</ol>
 
 <ol
   class:column={editable}
