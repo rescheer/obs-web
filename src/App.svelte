@@ -334,6 +334,7 @@
                 class="button is-danger"
                 on:click={stopStream}
                 title="Stop Stream"
+                disabled
               >
                 <span class="icon"><Icon path={mdiAccessPointOff} /></span>
                 <span>{formatTime(heartbeat.streaming.outputDuration)}</span>
@@ -343,6 +344,7 @@
                 class="button is-danger is-light"
                 on:click={startStream}
                 title="Start Stream"
+                disabled
               >
                 <span class="icon"><Icon path={mdiAccessPoint} /></span>
               </button>
@@ -463,6 +465,7 @@
               class="button is-danger is-light"
               on:click={disconnect}
               title="Disconnect"
+              disabled
             >
               <span class="icon"><Icon path={mdiConnection} /></span>
             </button>
@@ -494,13 +497,32 @@
 
 <div class="status">
   {#if connected}
-    <button class="button is-info is-light" style="width: 100%;" disabled>
-      {#if heartbeat && heartbeat.stats}
-        {Math.round(heartbeat.stats.activeFps)} fps, {Math.round(
-          heartbeat.stats.cpuUsage
-        )}% CPU, {heartbeat.stats.renderSkippedFrames} skipped frames
-      {:else}Connected{/if}
-    </button>
+    {#if heartbeat && heartbeat.recording && heartbeat.recording.outputActive}
+    <button
+        class="button is-success is-dark"
+        style="width: 100%; color:red;"
+        disabled
+      >
+        <span>Recording </span>
+        <span class="icon"><Icon path={mdiRecord} /></span>
+        <span>{formatTime(heartbeat.recording.outputDuration)}</span>
+      </button>
+    {:else}
+      <button
+      class="button is-danger is-dark"
+      style="width: 100%;"
+      disabled
+      >
+      <span>Not Recording</span>
+      </button>
+    {/if}
+      <button class="button is-info is-light" style="width: 100%;" disabled>
+        {#if heartbeat && heartbeat.stats}
+          {Math.round(heartbeat.stats.activeFps)} fps, {Math.round(
+            heartbeat.stats.cpuUsage
+          )}% CPU, {heartbeat.stats.renderSkippedFrames} skipped frames
+        {:else}Connected{/if}
+      </button>
   {/if}
 </div>
 
