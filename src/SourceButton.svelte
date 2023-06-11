@@ -4,7 +4,18 @@
   export let icon = '#ffffff'
   export let isProgram = false
   export let isPreview = false
+  export let activeSingle
   export let img = ''
+
+  const isSingleScene = name.includes('Duo')
+  const isMetaScene = name.includes('META')
+  let subName = name.substr(5)
+
+  if (name.includes('Duo')) {
+    subName = 'Single'
+  } else if (name.includes('Focus')) {
+    subName = 'Dice Box'
+  }
 
   import { createEventDispatcher } from 'svelte'
   const dispatch = createEventDispatcher()
@@ -18,19 +29,24 @@
   class:title={buttonStyle === 'text'}
   class:program={isProgram}
   class:preview={isPreview}
+  class:meta={isMetaScene}
+  class:taylor={isSingleScene && activeSingle === 'taylor'}
+  class:kitty={isSingleScene && activeSingle === 'kitty'}
+  class:sam={isSingleScene && activeSingle === 'sam'}
+  class:josh={isSingleScene && activeSingle === 'josh'}
   class:with-icon={buttonStyle === 'icon'}
   on:click={() => dispatch('click')}
   style={buttonStyle === 'icon' ? style : ''}
-  title={name}
+  title={subName}
   >
-  {#if img}<img src={img} alt={name} class="thumbnail" />{/if}
-  {#if buttonStyle !== 'icon'}{name}{/if}
+  {#if img}<img src={img} alt={subName} class="thumbnail" />{/if}
+  {#if buttonStyle !== 'icon'}{subName}{/if}
 </button>
 
 <style>
   button {
     border: none;
-    height: 4rem;
+    height: 3.5rem;
     text-align: center;
     font-size: 1.25rem;
     width: 100%;
@@ -38,6 +54,21 @@
     background: #3e8ed0 no-repeat center center / cover;
     color: #fff;
     border-radius: 5px;
+  }
+  button.meta {
+    background: #275b86 no-repeat center center / cover;
+  }
+  button.taylor::after {
+    content: " - Taylor"
+  }
+  button.kitty::after {
+    content: " - Kitty"
+  }
+  button.sam::after {
+    content: " - Sam"
+  }
+  button.josh::after {
+    content: " - Josh"
   }
   button.preview {
     background-color: #00d1b2;
