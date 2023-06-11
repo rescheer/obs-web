@@ -10,31 +10,31 @@
   export let buttonStyle = 'text' // text, screenshot, icon
   export let editable = false
 
-  const mapCameraSceneName = 'test'
+  const mapCameraSceneName = 'SRC Camera 4 Map'
   const mapCameraSceneItemName = 'Map Camera'
   let mapCameraSceneItemId
   let isMapCameraEnabled
 
-  const singleSceneName = 'test'
+  const singleSceneName = 'BASE Duo'
   let singleActivePlayer = ''
   let singleSceneItems = {
     taylor: {
-      itemName: 'taylor',
+      itemName: 'SRC PLYR Taylor',
       playerName: 'Taylor',
       id: undefined,
     },
     kitty: {
-      itemName: 'kitty',
+      itemName: 'SRC PLYR Kitty',
       playerName: 'Kitty',
       id: undefined,
     },
     sam: {
-      itemName: 'sam',
+      itemName: 'SRC PLYR Sam',
       playerName: 'Sam',
       id: undefined,
     },
     josh: {
-      itemName: 'josh',
+      itemName: 'SRC PLYR Miranda',
       playerName: 'Josh',
       id: undefined,
     },
@@ -67,7 +67,7 @@
 
     // Get mapCamera scene item id from OBS
     ({sceneItemId: mapCameraSceneItemId} = await sendCommand('GetSceneItemId',
-      { sceneName: "test", sourceName: mapCameraSceneItemName }))
+      { sceneName: mapCameraSceneName, sourceName: mapCameraSceneItemName }))
     // console.log('Battlecam ID: ', mapCameraSceneItemId)
 
     // Get mapCamera enabled state from OBS
@@ -86,11 +86,9 @@
           { sceneName: singleSceneName, sceneItemId: singleSceneItems[player].id })
           if (isEnabled) {
             singleActivePlayer = player
-            console.log(singleActivePlayer)
           }
       }
     })
-    console.log(singleSceneItems)
   })
 
   obs.on('StudioModeStateChanged', async (data) => {
