@@ -26,13 +26,13 @@
     font-size: 1rem;
     width: 22.5%;
     cursor: pointer;
-    background: #3e8ed0 no-repeat center center / cover;
+    background: #3ebad0 no-repeat center center / cover;
     color: #fff;
     border-radius: 5px;
     margin-bottom: 0.1rem;
   }
   button.active {
-    background-color: #f14668;
+    background-color: #e96d86;
   }
   button:not(.title) {
     padding: 0;
