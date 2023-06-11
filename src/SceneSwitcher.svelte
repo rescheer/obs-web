@@ -2,6 +2,7 @@
   import { onMount } from 'svelte'
   import { obs, sendCommand } from './obs.js'
   import SourceButton from './SourceButton.svelte'
+  import PlayerButton from './PlayerButton.svelte';
 
   export let programScene = {}
   export let previewScene = {}
@@ -13,6 +14,32 @@
   const mapCameraSceneItemName = 'Map Camera'
   let mapCameraSceneItemId
   let isMapCameraEnabled
+
+  const singleSceneName = 'test'
+  let singleActivePlayer = ''
+  let singleSceneItems = {
+    taylor: {
+      itemName: 'taylor',
+      playerName: 'Taylor',
+      id: undefined,
+    },
+    kitty: {
+      itemName: 'kitty',
+      playerName: 'Kitty',
+      id: undefined,
+    },
+    sam: {
+      itemName: 'sam',
+      playerName: 'Sam',
+      id: undefined,
+    },
+    josh: {
+      itemName: 'josh',
+      playerName: 'Josh',
+      id: undefined,
+    },
+  }
+  const players = Object.keys(singleSceneItems)
 
   let scenesFiltered = []
   let isStudioMode = false
@@ -38,7 +65,7 @@
       previewScene = data.currentPreviewSceneName || ''
     }
 
-    // Get mapCamera item id from OBS
+    // Get mapCamera scene item id from OBS
     ({sceneItemId: mapCameraSceneItemId} = await sendCommand('GetSceneItemId',
       { sceneName: "test", sourceName: mapCameraSceneItemName }))
     // console.log('Battlecam ID: ', mapCameraSceneItemId)
@@ -49,6 +76,21 @@
         { sceneName: mapCameraSceneName, sceneItemId: mapCameraSceneItemId }))
     }
     // console.log('Battlecam State: ', isMapCameraEnabled)
+
+    // Get single shot scene item ids and states for players from OBS
+    players.forEach(async (player) => {
+      ({sceneItemId: singleSceneItems[player].id} = await sendCommand('GetSceneItemId',
+        { sceneName: singleSceneName, sourceName: singleSceneItems[player].itemName }))
+      if(singleSceneItems[player].id) {
+        const {sceneItemEnabled: isEnabled} = await sendCommand('GetSceneItemEnabled',
+          { sceneName: singleSceneName, sceneItemId: singleSceneItems[player].id })
+          if (isEnabled) {
+            singleActivePlayer = player
+            console.log(singleActivePlayer)
+          }
+      }
+    })
+    console.log(singleSceneItems)
   })
 
   obs.on('StudioModeStateChanged', async (data) => {
@@ -97,7 +139,7 @@
   })
 
   obs.on('SceneItemEnableStateChanged', async (data) => {
-    if (data.sceneName === "test" &&
+    if (data.sceneName === mapCameraSceneName &&
         data.sceneItemId === mapCameraSceneItemId) {
       isMapCameraEnabled = data.sceneItemEnabled
     }
@@ -116,11 +158,27 @@
   function mapCameraClicker () {
     return async function () {
       isMapCameraEnabled = !isMapCameraEnabled
-      await sendCommand('SetSceneItemEnabled',
-        { sceneName: mapCameraSceneName,
+      await sendCommand('SetSceneItemEnabled', {
+          sceneName: mapCameraSceneName,
           sceneItemId: mapCameraSceneItemId,
           sceneItemEnabled: isMapCameraEnabled
         })
+    }
+  }
+
+  function singleShotPlayerClicker(newActivePlayer) {
+    return async function () {
+      players.forEach(async (player) => {
+        const isNewActivePlayer = player === newActivePlayer
+        if (isNewActivePlayer) {
+          singleActivePlayer = newActivePlayer
+        }
+        await sendCommand('SetSceneItemEnabled', {
+          sceneName: singleSceneName,
+          sceneItemId: singleSceneItems[player].id,
+          sceneItemEnabled: isNewActivePlayer
+        })
+      })
     }
   }
 
@@ -132,24 +190,24 @@
   }
 </script>
 
-<ol
-  class:column={editable}
-  class:with-icon={buttonStyle === 'icon'}
-  >
+<ol style="margin-bottom: 0.1rem;">
  <li>
-    <button name="battlecamButton"
+    <PlayerButton name="Map Camera: {isMapCameraEnabled ? "Showing" : "Hidden"}"
       on:click={mapCameraClicker()}
-      style="width: 100%;
-        height: 4rem;
-        background-color: {isMapCameraEnabled ? 'lightgreen' : 'pink'};
-        font-size: 1.25rem;
-        font-weight: 600;
-      "
-    >
-    Map Camera: {isMapCameraEnabled ? "Showing" : "Hidden"}
-    </button>
+      isActive={!isMapCameraEnabled}
+      fullWidth
+    />
   </li>
 </ol>
+
+<div class="single-player-select">
+  {#each players as player}
+    <PlayerButton name={singleSceneItems[player].playerName}
+      on:click={singleShotPlayerClicker(player)}
+      isActive={player === singleActivePlayer}
+    />
+  {/each}
+</div>
 
 <ol
   class:column={editable}
@@ -206,5 +264,12 @@
     min-width: 0;
     flex-grow: 0;
     flex-shrink: 1;
+  }
+  .single-player-select {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: .5rem;
+    margin-bottom: 0rem;
   }
 </style>
