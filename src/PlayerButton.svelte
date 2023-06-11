@@ -29,7 +29,7 @@
     background: #3ebad0 no-repeat center center / cover;
     color: #fff;
     border-radius: 5px;
-    margin-bottom: 0.1rem;
+    margin-bottom: 0.5rem !important;
   }
   button.active {
     background-color: #e96d86;
