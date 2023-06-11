@@ -15,6 +15,11 @@
   let mapCameraSceneItemId
   let isMapCameraEnabled
 
+  const sittingDmSceneName = 'SRC DM Sit/Stand'
+  const sittingDmSceneItemName = 'Sit'
+  let sittingDmSceneItemId
+  let isDmSitting
+
   const singleSceneName = 'BASE Duo'
   let singleActivePlayer = ''
   let singleSceneItems = {
@@ -66,6 +71,16 @@
     if (data && data.studioModeEnabled) {
       isStudioMode = true
       previewScene = data.currentPreviewSceneName || ''
+    }
+
+    // Get sitting shot scene item id
+    ({sceneItemId: sittingDmSceneItemId} = await sendCommand('GetSceneItemId',
+      { sceneName: sittingDmSceneName, sourceName: sittingDmSceneItemName }))
+
+    // Get DM sitting shot enabled state
+    if (sittingDmSceneItemId) {
+      ({sceneItemEnabled: isDmSitting} = await sendCommand('GetSceneItemEnabled',
+          { sceneName: sittingDmSceneName, sceneItemId: sittingDmSceneItemId }))
     }
 
     // Get mapCamera scene item id from OBS
@@ -183,6 +198,17 @@
     }
   }
 
+  function sitStandClicker() {
+    return async function () {
+      isDmSitting = !isDmSitting
+      await sendCommand('SetSceneItemEnabled', {
+          sceneName: sittingDmSceneName,
+          sceneItemId: sittingDmSceneItemId,
+          sceneItemEnabled: isDmSitting
+        })
+    }
+  }
+
   function onNameChange (event) {
     sendCommand('SetSceneName', { sceneName: event.target.title, newSceneName: event.target.value })
   }
@@ -191,17 +217,20 @@
   }
 </script>
 
-<ol style="margin-bottom: 0.1rem;">
- <li>
-    <PlayerButton name="Map Camera: {isMapCameraEnabled ? "Showing" : "Hidden"}"
-      on:click={mapCameraClicker()}
-      isActive={!isMapCameraEnabled}
-      fullWidth
-    />
-  </li>
-</ol>
+<div class="meta-controls" id="misc">
+  <PlayerButton name="MapCam: {isMapCameraEnabled ? "On" : "Off"}"
+    on:click={mapCameraClicker()}
+    isActive={!isMapCameraEnabled}
+    halfWidth
+  />
+  <PlayerButton name="DM: {isDmSitting ? "Sitting" : "Standing"}"
+    on:click={sitStandClicker()}
+    isActive={!isDmSitting}
+    halfWidth
+  />
+</div>
 
-<div class="single-player-select">
+<div class="meta-controls" id="singles">
   {#each players as player}
     <PlayerButton name={singleSceneItems[player].playerName}
       on:click={singleShotPlayerClicker(player)}
@@ -228,10 +257,11 @@
   {:else}
     {#each scenesFiltered as scene}
     <li>
-      <SourceButton name={scene.sceneName === 'CMBT Focus' ? 'Dice Box' : scene.sceneName.substr(5)}
+      <SourceButton name={scene.sceneName}
         on:click={sceneClicker(scene)}
         isProgram={programScene === scene.sceneName}
         isPreview={previewScene === scene.sceneName}
+        activeSingle={singleActivePlayer}
         buttonStyle={buttonStyle}
         icon={sceneIcons[scene.sceneName] || `#${Math.floor(Math.random() * 16777215).toString(16)}`}
       />
@@ -246,7 +276,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: .5rem;
+    gap: .7rem;
     margin-bottom: 2rem;
   }
   ol.column {
@@ -266,7 +296,7 @@
     flex-grow: 0;
     flex-shrink: 1;
   }
-  .single-player-select {
+  .meta-controls {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
