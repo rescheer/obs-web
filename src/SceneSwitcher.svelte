@@ -48,6 +48,9 @@
   $: scenesFiltered = scenes.filter((scene) => 
     scene.sceneName.indexOf('SRC') === -1 &&
     scene.sceneName.indexOf('DISC') === -1 &&
+    scene.sceneName.indexOf('Intro') === -1 &&
+    scene.sceneName.indexOf('Tech') === -1 &&
+    scene.sceneName.indexOf('Trailers') === -1 &&
     scene.sceneName.indexOf('---') === -1)
     .reverse()
   // store sceneIcons on change
@@ -225,7 +228,7 @@
   {:else}
     {#each scenesFiltered as scene}
     <li>
-      <SourceButton name={scene.sceneName}
+      <SourceButton name={scene.sceneName === 'CMBT Focus' ? 'Dice Box' : scene.sceneName.substr(5)}
         on:click={sceneClicker(scene)}
         isProgram={programScene === scene.sceneName}
         isPreview={previewScene === scene.sceneName}
