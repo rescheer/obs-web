@@ -2,7 +2,7 @@
   export let name
   export let buttonStyle = 'text'
   export let isActive = false
-  export let fullWidth = false
+  export let halfWidth = false
 
   import { createEventDispatcher } from 'svelte'
   const dispatch = createEventDispatcher();
@@ -11,7 +11,7 @@
 <button
   class:title={buttonStyle === 'text'}
   class:active={isActive}
-  style={fullWidth ? 'width: 100%' : ''}
+  style={halfWidth ? 'width: 47%' : ''}
   on:click={() => dispatch('click')}
   title={name}
   >
