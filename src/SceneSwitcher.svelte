@@ -193,13 +193,14 @@
           isDmSitting = changedState;
         }
         break;
-      case singleSceneName: {
+      /* case singleSceneName: {
+        // Todo: this in a way that doesn't break
         players.forEach((player) => {
           if (changedSceneItemId === singleSceneItems[player].id) {
             singleActivePlayer = player;
           }
         });
-      }
+      } */
       default:
         break;
     }
