@@ -1,28 +1,28 @@
 <script>
-  export let name
-  export let buttonStyle = 'text'
-  export let icon = '#ffffff'
-  export let isProgram = false
-  export let isPreview = false
-  export let activeSingle
-  export let img = ''
+  export let name;
+  export let buttonStyle = 'text';
+  export let icon = '#ffffff';
+  export let isProgram = false;
+  export let isPreview = false;
+  export let activeSingle;
+  export let img = '';
 
-  const isSingleScene = name.includes('Duo')
-  const isMetaScene = name.includes('META')
-  let subName = name.substr(5)
+  const isSingleScene = name.includes('Duo');
+  const isMetaScene = name.includes('META');
+  let subName = name.substr(5);
 
   if (name.includes('Duo')) {
-    subName = 'Single'
+    subName = 'Single';
   } else if (name.includes('Focus')) {
-    subName = 'Dice Box'
+    subName = 'Dice Box';
   }
 
-  import { createEventDispatcher } from 'svelte'
-  const dispatch = createEventDispatcher()
+  import { createEventDispatcher } from 'svelte';
+  const dispatch = createEventDispatcher();
 
   $: style = icon.startsWith('#')
     ? `background-color: ${icon};`
-    : `background-image: url(${icon});`
+    : `background-image: url(${icon});`;
 </script>
 
 <button
@@ -38,7 +38,7 @@
   on:click={() => dispatch('click')}
   style={buttonStyle === 'icon' ? style : ''}
   title={subName}
-  >
+>
   {#if img}<img src={img} alt={subName} class="thumbnail" />{/if}
   {#if buttonStyle !== 'icon'}{subName}{/if}
 </button>
@@ -59,16 +59,16 @@
     background: #275b86 no-repeat center center / cover;
   }
   button.taylor::after {
-    content: " - Taylor"
+    content: ' - Taylor';
   }
   button.kitty::after {
-    content: " - Kitty"
+    content: ' - Kitty';
   }
   button.sam::after {
-    content: " - Sam"
+    content: ' - Sam';
   }
   button.josh::after {
-    content: " - Josh"
+    content: ' - Josh';
   }
   button.preview {
     background-color: #00d1b2;
@@ -85,14 +85,14 @@
     height: 64px;
     width: 64px;
     box-shadow: 2px 2px 5px gray;
-    margin: .5em;
+    margin: 0.5em;
     border-radius: 5px;
     cursor: pointer;
     background: white no-repeat center center / cover;
     position: relative;
   }
   button.with-icon.program::before {
-    content: " ";
+    content: ' ';
     position: absolute;
     top: -5px;
     right: -5px;
