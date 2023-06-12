@@ -1,4 +1,5 @@
 /node_modules/
+/public/cfg/
 /public/bundle-*
 /public/index.html
 .DS_Store
