@@ -38,7 +38,24 @@
 
   onMount(async () => {
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js');
+      navigator.serviceWorker.register('/service-worker.js').then((reg) => {
+        reg.onupdatefound = () => {
+          const installingWorker = reg.installing;
+          installingWorker.onstatechange = () => {
+            switch (installingWorker.state) {
+              case 'installed':
+                if (navigator.serviceWorker.controller) {
+                  // new update available
+                  setTimeout(() => document.location.reload(true), 1000);
+                  caches.keys().then((keys) => {
+                    keys.forEach((key) => caches.delete(key));
+                  });
+                }
+                break;
+            }
+          };
+        };
+      });
     }
 
     // Request screen wakelock
