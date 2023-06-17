@@ -3,8 +3,6 @@ const CACHE_NAME = 'offline'
 
 // Customize this with a different URL if needed.
 const cacheFiles = [
-  '/',
-  'service-worker.js',
   '/icon/icon-192x192.png',
   '/icon/icon-256x256.png',
   '/icon/icon-384x384.png',
@@ -48,7 +46,7 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     (async () => {
       // Respond from the cache if we can
-      const cache = await caches.open(CACHE_NAME)
+      /* const cache = await caches.open(CACHE_NAME)
       const cachedResponse = await cache.match(event.request)
 
       if (cachedResponse) {
@@ -60,11 +58,11 @@ self.addEventListener('fetch', (event) => {
 
       if (response) {
         return response
-      }
+      } */
 
       // Else try the network.
       return fetch(event.request).then((response) => {
-        cache.put(event.request, response.clone())
+        // cache.put(event.request, response.clone())
         return response
       })
     })()
